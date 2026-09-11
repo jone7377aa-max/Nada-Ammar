@@ -30,8 +30,10 @@ fast on phones, exportable and independently deployable.
    أحبها بشكل ما أعرف أوصفه بالكلام." → "ادخلي ❤️" (starts music + heart burst).
 2. Birthday scene: 14 سبتمبر 2006 with Ammar-voice lines.
 3. Message scene: the exact personal message, revealed gradually on scroll.
-4. Rigged quiz ("عمار يختبر ندى 😂"): 3 questions, every answer wrong → shake + "غلط" animation
-   + "الإجابة الصحيحة 😌:" with the exact funny answers + haptics + SFX.
+4. Rigged quiz ("عمار يختبر ندى 😂"): 3 questions. Q1: "انتي تحبيني اكثر" is wrong (shake +
+   "غلط" + funny correct answer); "انا احبك اكثر" / "كمان مرة" are CORRECT (gold glow + heart
+   burst + "صحييييح ✅😌" + "ايوه شطورة وانتي تعترفي كدا 🌚"). Q2: every answer is CORRECT →
+   "ايوه بحبها بس بحبكم كلكم والله 😂". Q3: every answer wrong. Haptics + SFX throughout.
 5. New-year scene: "كبرتي سنة يا عجوزتي 😂❤️" + live countdown to Sep 14 2026; on the day →
    "اليوم يوم ندى ❤️🎂" + confetti.
 6. Final scene: staged quiet reveal of the exact final message → "Happy Birthday, Nada ❤️" →

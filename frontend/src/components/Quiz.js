@@ -6,6 +6,8 @@ const QUESTIONS = [
         label: "السؤال الأول 😑",
         q: "طيب… مين يحب الثاني اكثثثر؟",
         options: ["انتي تحبيني اكثر 🙄", "انا احبك اكثر 😌", "انا احبك اكثر كمان مرة 😑"],
+        correctIdx: [1, 2],
+        correctAnswer: ["ايوه شطورة وانتي تعترفي كدا 🌚"],
         wrong: "غلططططط ❌😑",
         answer: ["طبعا انا احبك اكثر مافيش خياااار ثانييييييي 😑😑", "وش كنتي متوقعة يعني؟ 😑😂"],
         next: "يلا السؤال اللي بعده 👀",
@@ -14,8 +16,8 @@ const QUESTIONS = [
         label: "السؤال الثاني 😑",
         q: "بحب مين اكثرر؟",
         options: ["نونوووووو", "توتووووووو", "حلوياتيييييي"],
-        wrong: "غلط يا ندى ❌😂",
-        answer: ["بحبككككم كلكم على بعضكم 😂", "ايوه بعشئكم 😂"],
+        allCorrect: true,
+        correctAnswer: ["ايوه بحبها بس بحبكم كلكم والله 😂"],
         next: "السؤال اللي بعده 👀",
     },
     {
@@ -32,18 +34,22 @@ export const Quiz = ({ playSfx, onFinish }) => {
     const [qi, setQi] = useState(0);
     const [picked, setPicked] = useState(null);
     const [answered, setAnswered] = useState(false);
+    const [correct, setCorrect] = useState(false);
     const [showResult, setShowResult] = useState(false);
     const [finished, setFinished] = useState(false);
 
     const q = QUESTIONS[qi];
+    const resultLines = correct ? q.correctAnswer || [] : q.answer || [];
 
     const choose = (i) => {
         if (answered) return;
+        const isCorrect = Boolean(q.allCorrect) || (q.correctIdx || []).includes(i);
         try {
-            navigator.vibrate && navigator.vibrate(35);
+            navigator.vibrate && navigator.vibrate(isCorrect ? [20, 60, 20] : 35);
         } catch (e) {}
-        playSfx && playSfx("wrong");
+        playSfx && playSfx(isCorrect ? "pop" : "wrong");
         setPicked(i);
+        setCorrect(isCorrect);
         setAnswered(true);
         setTimeout(() => setShowResult(true), 620);
     };
@@ -56,6 +62,7 @@ export const Quiz = ({ playSfx, onFinish }) => {
             setQi(qi + 1);
             setPicked(null);
             setAnswered(false);
+            setCorrect(false);
             setShowResult(false);
         } else {
             playSfx && playSfx("pop");
@@ -97,7 +104,11 @@ export const Quiz = ({ playSfx, onFinish }) => {
                         key={i}
                         data-testid={`quiz-option-${qi}-${i}`}
                         className={`quiz-option${
-                            answered && picked === i ? " wrong-pick" : ""
+                            answered && picked === i
+                                ? correct
+                                    ? " correct-pick"
+                                    : " wrong-pick"
+                                : ""
                         }${answered && picked !== i ? " disabled" : ""}`}
                         onClick={() => choose(i)}
                     >
@@ -107,11 +118,20 @@ export const Quiz = ({ playSfx, onFinish }) => {
             </div>
             {showResult && (
                 <div className="quiz-result" data-testid="quiz-result">
-                    <p className="wrong-banner" data-testid="quiz-wrong-banner">
-                        {q.wrong}
-                    </p>
-                    <p className="correct-label">الإجابة الصحيحة 😌:</p>
-                    {q.answer.map((l, i) => (
+                    {correct && <HeartBurst count={7} />}
+                    {correct ? (
+                        <p className="correct-banner" data-testid="quiz-correct-banner">
+                            صحييييح ✅😌
+                        </p>
+                    ) : (
+                        <>
+                            <p className="wrong-banner" data-testid="quiz-wrong-banner">
+                                {q.wrong}
+                            </p>
+                            <p className="correct-label">الإجابة الصحيحة 😌:</p>
+                        </>
+                    )}
+                    {resultLines.map((l, i) => (
                         <p
                             key={i}
                             className="answer-line"
@@ -123,7 +143,7 @@ export const Quiz = ({ playSfx, onFinish }) => {
                     <button
                         data-testid="quiz-next-button"
                         className="btn-love answer-line mt-7"
-                        style={{ animationDelay: `${0.7 + q.answer.length * 0.6}s` }}
+                        style={{ animationDelay: `${0.7 + resultLines.length * 0.6}s` }}
                         onClick={next}
                     >
                         {q.next}
