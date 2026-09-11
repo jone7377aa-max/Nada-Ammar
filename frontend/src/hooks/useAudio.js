@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from "react";
 
 const MAX_VOLUME = 0.55;
 const FADE_STEP = 60;
+const MASTER_TRACK = "/audio/qusad-einy.mp3";
 
 const fade = (audio, target, ms, onDone) => {
     if (!audio) return;
@@ -33,21 +34,14 @@ export const useAudio = () => {
     const [enabled, setEnabled] = useState(false);
 
     const startTrack = useCallback((name) => {
-        const old = currentRef.current;
         currentTrackRef.current = name;
-        if (old) {
-            fade(old, 0, 650, () => {
-                try {
-                    old.removeAttribute("src");
-                } catch (e) {}
-            });
-        }
-        const a = new Audio(`/audio/${name}.mp3`);
+        if (currentRef.current) return; // قصاد عيني تكمل معها الرحلة كلها بدون توقف
+        const a = new Audio(MASTER_TRACK);
         a.loop = true;
         a.preload = "auto";
         a.volume = 0;
         a.play()
-            .then(() => fade(a, MAX_VOLUME, 1400))
+            .then(() => fade(a, MAX_VOLUME, 1800))
             .catch(() => {});
         currentRef.current = a;
     }, []);
